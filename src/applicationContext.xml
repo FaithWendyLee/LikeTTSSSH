@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:cache="http://www.springframework.org/schema/cache" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans         
+      http://www.springframework.org/schema/beans/spring-beans-4.0.xsd        
+      http://www.springframework.org/schema/aop         
+      http://www.springframework.org/schema/aop/spring-aop-4.0.xsd        
+      http://www.springframework.org/schema/context         
+      http://www.springframework.org/schema/context/spring-context-4.0.xsd        
+      http://www.springframework.org/schema/tx         
+      http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+      http://www.springframework.org/schema/cache 
+      http://www.springframework.org/schema/cache/spring-cache-4.0.xsd">
+	<!-- <bean id="..." class="..."> collaborators and configuration for this 
+		bean go here </bean> <bean id="..." class="..."> collaborators and configuration 
+		for this bean go here </bean> more bean definitions go here -->
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/homeworksdb?autoReconnect=true&amp;characterEncoding=GBK" />
+		<property name="username" value="root" />
+		<property name="password" value="" />
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="configLocation" value="classpath:hibernate.cfg.xml">
+		</property>
+		<property name="dataSource" ref="dataSource" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.autocommit">true</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext
+				</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate4.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+
+	<!-- 定义 Autowired 自动注入 bean -->
+	<bean
+		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor" />
+
+
+	<!-- 扫描有注解的文件 base-package 包路径 -->
+	<context:component-scan base-package="action" />
+	<context:component-scan base-package="dao" />
+	<context:component-scan base-package="model" />
+	<context:component-scan base-package="service" />
+	<!-- 配置事务传播特性 -->
+
+	<!-- 配置事务传播特性 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<tx:method name="*" propagation="REQUIRED" read-only="true" />
+			<tx:method name="add*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="get*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="find*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="save*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="alter*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="delete*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="remove*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="update*" read-only="false" propagation="NOT_SUPPORTED" />
+			<tx:method name="upload*" read-only="false" propagation="NOT_SUPPORTED" />
+		</tx:attributes>
+	</tx:advice>
+	<aop:config>
+		<aop:pointcut id="allservice" expression="execution(* service.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allservice" />
+	</aop:config>
+	<aop:config>
+		<aop:pointcut id="alldao" expression="execution(* dao.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="alldao" />
+	</aop:config>
+	<aop:config>
+		<aop:pointcut id="allAction" expression="execution(* action.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allAction" />
+	</aop:config>
+	<aop:config>
+		<aop:pointcut id="allservlets" expression="execution(* servlets.*.*(..))" />
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="allservlets" />
+	</aop:config>
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+
+	<bean id="StudentDao" class="dao.impl.StudentDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="TeacherDao" class="dao.impl.TeacherDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="PersonInChargeDao" class="dao.impl.PersonInChargeDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="AssistantDao" class="dao.impl.AssistantDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="CourseDao" class="dao.impl.CourseDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="PlanDao" class="dao.impl.PlanDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="ScoreDao" class="dao.impl.ScoreDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="SampleCommentDao" class="dao.impl.SampleCommentDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	<bean id="HomeworkDao" class="dao.impl.HomeworkDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	
+
+
+	<bean id="StudentService" class="service.StudentServiceImpl">
+		<property name="StudentDao">
+			<ref bean="StudentDao" />
+		</property>
+	</bean>
+	<bean id="TeacherService" class="service.TeacherServiceImpl">
+		<property name="TeacherDao">
+			<ref bean="TeacherDao" />
+		</property>
+	</bean>
+	<bean id="PersonInChargeService" class="service.PersonInChargeServiceImpl">
+		<property name="PersonInChargeDao">
+			<ref bean="PersonInChargeDao" />
+		</property>
+	</bean>
+	<bean id="AssistantService" class="service.AssistantServiceImpl">
+		<property name="AssistantDao">
+			<ref bean="AssistantDao" />
+		</property>
+	</bean>
+	<bean id="CourseService" class="service.CourseServiceImpl">
+		<property name="CourseDao">
+			<ref bean="CourseDao" />
+		</property>
+	</bean>
+	<bean id="PlanService" class="service.PlanServiceImpl">
+		<property name="PlanDao">
+			<ref bean="PlanDao" />
+		</property>
+	</bean>
+	<bean id="ScoreService" class="service.ScoreServiceImpl">
+		<property name="ScoreDao">
+			<ref bean="ScoreDao" />
+		</property>
+	</bean>
+	<bean id="SampleCommentService" class="service.SampleCommentServiceImpl">
+		<property name="SampleCommentDao">
+			<ref bean="SampleCommentDao" />
+		</property>
+	</bean>
+	<bean id="HomeworkService" class="service.HomeworkServiceImpl">
+		<property name="HomeworkDao">
+			<ref bean="HomeworkDao" />
+		</property>
+	</bean>
+
+
+	<bean id="LoginAction" class="action.LoginAction">
+		<property name="StudentService">
+			<ref bean="StudentService" />
+		</property>
+		<property name="TeacherService">
+			<ref bean="TeacherService" />
+		</property>
+		<property name="PersonInChargeService">
+			<ref bean="PersonInChargeService" />
+		</property>
+		<property name="AssistantService">
+			<ref bean="AssistantService" />
+		</property>
+		<property name="CourseService">
+			<ref bean="CourseService" />
+		</property>
+		<property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+		<property name="ScoreService">
+			<ref bean="ScoreService" />
+		</property>
+		<property name="SampleCommentService">
+			<ref bean="SampleCommentService" />
+		</property>
+		<property name="HomeworkService">
+			<ref bean="HomeworkService" />
+		</property>
+	</bean>
+
+	<bean id="AddUserAction" class="action.admin.AddUserAction">
+		<property name="StudentService">
+			<ref bean="StudentService" />
+		</property>
+		<property name="TeacherService">
+			<ref bean="TeacherService" />
+		</property>
+		<property name="PersonInChargeService">
+			<ref bean="PersonInChargeService" />
+		</property>
+		<property name="AssistantService">
+			<ref bean="AssistantService" />
+		</property>
+	</bean>
+
+	<bean id="AlterUserAction" class="action.admin.AlterUserAction">
+		<property name="StudentService">
+			<ref bean="StudentService" />
+		</property>
+		<property name="TeacherService">
+			<ref bean="TeacherService" />
+		</property>
+		<property name="PersonInChargeService">
+			<ref bean="PersonInChargeService" />
+		</property>
+		<property name="AssistantService">
+			<ref bean="AssistantService" />
+		</property>
+	</bean>
+
+	<bean id="AddCourseAction" class="action.admin.AddCourseAction">
+		<property name="CourseService">
+			<ref bean="CourseService" />
+		</property>
+	</bean>
+
+
+	<bean id="AlterCourseAction" class="action.admin.AlterCourseAction">
+		<property name="CourseService">
+			<ref bean="CourseService" />
+		</property>
+	</bean>
+
+
+	<bean id="SetstudentAction" class="action.teacher.SetstudentAction">
+		<property name="CourseService">
+			<ref bean="CourseService" />
+		</property>
+	</bean>
+
+	<bean id="setAssistantAction" class="action.teacher.SetAssistantAction">
+		<property name="CourseService">
+			<ref bean="CourseService" />
+		</property>
+	</bean>
+
+	<bean id="MakehomeworkplanAction" class="action.teacher.MakeHomeworkplanAction">
+		<property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+	</bean>
+
+
+    <bean id="checkassscoreAction" class="action.teacher.CheckAssScoreAction">
+    <property name="ScoreService">
+			<ref bean="ScoreService" />
+		</property>
+	</bean>
+
+	<bean id="downloadscoreAction" class="action.teacher.DownLoadScoreAction">
+	</bean>
+
+	<bean id="uploadsamplecommentAction" class="action.teacher.UploadSampleCommentAction">
+		<property name="SampleCommentService">
+			<ref bean="SampleCommentService" />
+		</property>
+	</bean>
+
+	<bean id="uploadhomeworkAction" class="action.student.UploadhomeworkAction">
+	<property name="HomeworkService">
+			<ref bean="HomeworkService" />
+		</property>
+	</bean>
+	
+	
+	<bean id="downloadgradeAction" class="action.student.DownLoadGradeAction">
+	</bean>
+	
+	<bean id="downloadsamplecommentAction" class="action.student.DownloadsamplecommentAction">
+	</bean>
+
+    <bean id="downloadhomeworkAction" class="action.assistant.DownLoadHomeworkAction">
+	</bean>
+	
+	<bean id="uploadscoreAction" class="action.assistant.UploadScoreAction">
+	</bean>
+	
+	<bean id="monthAction" class="action.personincharge.MonthAction">
+	</bean>
+	
+	<bean id="difficultyAction" class="action.personincharge.DifficultyAction">
+		<property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+	</bean>
+	
+	<bean id="formatAction" class="action.personincharge.FormatAction">
+		<property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+	</bean>
+	
+	<bean id="homeworkuploadAction" class="action.personincharge.HomeworkuploadAction">
+	     <property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+	</bean>
+	
+	<bean id="scoreuploadAction" class="action.personincharge.ScoreuploadAction">
+	<property name="PlanService">
+			<ref bean="PlanService" />
+		</property>
+	</bean>
+	
+	
+	<bean id="homeworkarrangestuAction" class="action.personincharge.HomeworkArrangeStuAction">
+	</bean>
+	
+	<bean id="homeworkarrangeassAction" class="action.personincharge.HomeworkArrangeAssAction">
+	</bean>
+	</beans>

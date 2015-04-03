@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+
+<struts>
+	
+	<package name="strutsadmin" namespace="/admin" extends="struts-default">
+		<action name="login" class="LoginAction">
+			<result name="admin">/admin/mnguser.jsp</result>
+			<result name="teacher">/teacher/mycourse.jsp</result>
+			<result name="student">/student/mycoursestu.jsp</result>
+			<result name="assistant">/assistant/mycourseass.jsp</result>
+			<result name="personincharge">/personincharge/homeworkinfo.jsp</result>
+		</action>
+		<action name="addUser" class="AddUserAction">
+			<result name="success">/admin/mnguser.jsp</result>
+		</action>
+		<action name="alter_user" class="AlterUserAction">
+			<result name="failed">/admin/mnguser.jsp</result>
+			<result name="success">/admin/mnguser.jsp</result>
+		</action>
+		<action name="addcourse" class="AddCourseAction">
+			<result name="success">/admin/mngcourse.jsp</result>
+		</action>
+			<action name="altercourse" class="AlterCourseAction">
+			<result name="failed">/admin/mngcourse.jsp</result>
+			<result name="success">/admin/mngcourse.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	<package name="strutsteacher" namespace="/teacher" extends="struts-default">
+		
+		<action name="setstudent" class="SetstudentAction">
+			<result name="success">/teacher/setstudent.jsp</result>
+		</action>
+		<action name="setassistant" class="setAssistantAction">
+			<result name="success">/teacher/setassistant.jsp</result>
+		</action>
+		<action name="makehomeworkplan" class="MakehomeworkplanAction">
+			<result name="success">/teacher/makehomeworkplan.jsp</result>
+		</action>
+		<action name="downloadscore" class="downloadscoreAction">
+		</action>
+		<action name="uploadsamplecomment" class="uploadsamplecommentAction">
+			<result name="success">/teacher/uploadSampleComment.jsp</result>
+		</action>
+		<action name="checkassscore" class="checkassscoreAction">
+			<result name="success">/teacher/checkassScore.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	
+	<package name="strutsstudent" namespace="/student" extends="struts-default">
+		
+		<action name="uploadhomework" class="uploadhomeworkAction">
+			<result name="success">/student/uploadhomework.jsp</result>
+		</action>
+		<action name="downloadgrade" class="downloadgradeAction">
+		</action>
+		<action name="downloadsamplecomment" class="downloadsamplecommentAction">
+		</action>
+	</package>
+	
+	
+	
+	
+	<package name="strutsassistant" namespace="/assistant" extends="struts-default">
+		<action name="downloadhomework" class="downloadhomeworkAction">
+		</action>
+		<action name="uploadscore" class="uploadscoreAction">
+			<result name="success">/assistant/uploadscore.jsp</result>
+		</action>
+	</package>
+	
+	
+	
+	<package name="strutspic" namespace="/pic" extends="struts-default">
+		<action name="Month" class="monthAction">
+			<result name="info">/personincharge/homeworkinfo.jsp</result>
+			<result name="arrange">/personincharge/homeworkarrange.jsp</result>
+			<result name="upload">/personincharge/homeworkupload.jsp</result>
+			<result name="scoreupload">/personincharge/scoreupload.jsp</result>
+		</action>
+		<action name="difficulty" class="difficultyAction">
+		</action>
+		<action name="format" class="formatAction">
+		</action>
+		<action name="homeworkupload" class="homeworkuploadAction">
+		</action>
+		<action name="scoreupload" class="scoreuploadAction">
+		</action>
+		
+		<action name="homeworkarrangestu" class="homeworkarrangestuAction">
+		</action>
+		<action name="homeworkarrangeass" class="homeworkarrangeassAction">
+		</action>
+	</package>
+
+</struts>
